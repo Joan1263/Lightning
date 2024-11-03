@@ -340,14 +340,31 @@
                 if (this.x < this.radius || this.x > circleCanvas.width - this.radius) this.vx *= -1;
                 if (this.y < this.radius || this.y > circleCanvas.height - this.radius) this.vy *= -1;
 
-		const cloudRect = cloud.getBoundingClientRect();
-		const cloudCenterX = cloudRect.left + cloudRect.width / 2;
-		const cloudBottom = cloudRect.bottom - 100;
+		const cloudGif = cloud.getAttribute('data-gif-src');
+							cloud.src = cloudGif;
+							
+							setTimeout(() => {
+								const cloudRect = cloud.getBoundingClientRect();
+								const cloudCenterX = cloudRect.left + cloudRect.width / 2;
+								const cloudBottom = cloudRect.bottom - 100;
 								
-		const treeX = canvas.width / 2;
-		const treeY = canvas.height - 400;
-		drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
-		gifEffect('centerObj', 'treeBubble');
+								const treeX = canvas.width / 2;
+								const treeY = canvas.height - 400;
+								drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
+								gifEffect('centerObj', 'treeBubble');
+								animate();
+								
+								thunderSound.currentTime = 0;
+          							thunderSound.play();
+							
+								shakeCount = 0;
+								lastShakeTime = currentTime;
+								
+								setTimeout(() => {
+									const cloudImg = cloud.getAttribute('data-default-src');
+									cloud.src = cloudImg;
+								}, 1000);
+							}, 1000);
             }
 
             isExpired() {
