@@ -123,17 +123,18 @@
 		<img id="leftObj" src="Assets/PNG/Tire.png" alt="Pile of Tires">
 		<img id="rightObj" src="Assets/PNG/Car.png" data-default-src="Assets/PNG/Car.png" data-gif-src="Assets/GIF/CarStrike.gif" alt="Car">
 	</div>
-	<audio id="thunderSound" src="Assets/Thunder.mp3"></audio>
+	<audio id="thunderSound" src="Assets/Audio/Thunder.mp3"></audio>
 	<div class="narrative"></div>
 	<div class="gradient left"></div>
 	<div class="gradient right"></div>
 	<script>
 		const cloud = document.getElementById('touchCloud');
-     	const canvas = document.getElementById('lightningCanvas');
-     	const ctx = canvas.getContext('2d');
+     		const canvas = document.getElementById('lightningCanvas');
+     		const ctx = canvas.getContext('2d');
 		const narrative = document.querySelector('.narrative');
 		const gradientL = document.querySelector('.left');
 		const gradientR = document.querySelector('.right');
+		const thunderSound = document.getElementById('thunderSound');
 
      	function resizeCanvas() {
       		canvas.width = window.innerWidth;
