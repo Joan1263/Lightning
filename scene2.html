@@ -118,12 +118,12 @@
 		}
 		
 		canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 15;
-            pointer-events: none;
-        }
+            		position: fixed;
+            		top: 0;
+            		left: 0;
+            		z-index: 15;
+            		pointer-events: none;
+        	}
  	</style>
 </head>
 <body>
@@ -134,18 +134,19 @@
 		<img id="centerObj" src="Assets/PNG/Tree.png" data-default-src="Assets/PNG/TreeAfter.png" data-gif-src="Assets/GIF/TreeStrike.gif" alt="Tree">
 		<img id="treeBubble" src="Assets/PNG/TreeBubble.png" alt="Tree Bubble">
 	</div>
-	<audio id="thunderSound" src="Assets/Thunder.mp3"></audio>
+	<audio id="thunderSound" src="Assets/Audio/Thunder.mp3"></audio>
 	<div class="narrative"></div>
 	<div class="gradient left"></div>
 	<div class="gradient right"></div>
 	<canvas id="circleCanvas"></canvas>
 	<script>
 		const cloud = document.getElementById('touchCloud');
-     	const canvas = document.getElementById('lightningCanvas');
-     	const ctx = canvas.getContext('2d');
+     		const canvas = document.getElementById('lightningCanvas');
+     		const ctx = canvas.getContext('2d');
 		const narrative = document.querySelector('.narrative');
 		const gradientL = document.querySelector('.left');
 		const gradientR = document.querySelector('.right');
+		const thunderSound = document.getElementById('thunderSound');
 
      	function resizeCanvas() {
       		canvas.width = window.innerWidth;
@@ -222,149 +223,6 @@
 				}, 1000);
 			}, 500);
 		}
-		
-		
-
-		function distance(point1, point2) {
-     		return Math.sqrt(
-         		Math.pow(point2.x - point1.x, 2) + 
-            	Math.pow(point2.y - point1.y, 2)
- 			);
-     	}
-
-		function calculateRotationAngle(point1, point2) {
-			if (point1.x < point2.x){
-				return Math.atan2(point2.y - point1.y, point2.x - point1.x) * (180 / Math.PI);
-			} else {
-				return Math.atan2(point1.y - point2.y, point1.x - point2.x) * (180 / Math.PI);
-			}
-     	}
-
-    	function drawLightning(startX, startY, endX, endY) {
-      		ctx.clearRect(0, 0, canvas.width, canvas.height);
-         	ctx.beginPath();
-         	ctx.strokeStyle = '#FFD700';
-        	ctx.lineWidth = 15;
-
-         	let currentX = startX;
-         	let currentY = startY;
-         	const segments = 10;
-			const dx = endX - startX;
-			const segmentWidth = dx / segments;
-         	const dy = endY - startY;
-        	const segmentHeight = dy / segments;
-
-			ctx.moveTo(startX, startY);
-            
-        	for (let i = 0; i < segments; i++) {
-         		const nextY = startY + (i + 1) * segmentHeight;
-				const nextX = startX + (i + 1) * segmentWidth;
-          	const randX = nextX + (Math.random() - 0.5) * 50;
-            	ctx.lineTo(randX, nextY);
-           	currentX = randX;
-            	currentY = nextY;
-        	}
-            
-         	ctx.lineTo(endX, endY);
-        	ctx.stroke();
-
-			//Clear lightning after delay
-			setTimeout(() => {
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				narrative.textContent = "Ollie did not meant to hurt Mr. Tree.";
-			}, 300);
-    	}
-
-		function detectShake(currentX, currentY) {
-			const moveDistance = Math.abs(currentX - lastPosition.x);
-			const currentTime = Date.now();
-			
-			if (moveDistance > shakeThreshold) {
-				if (!isShaking) {
-					isShaking = true;
-					if (currentTime - lastShakeTime < 1000) {
-						shakeCount++;
-						if (shakeCount === 5) {
-							const cloudGif = cloud.getAttribute('data-gif-src');
-							cloud.src = cloudGif;
-							
-							setTimeout(() => {
-								const cloudRect = cloud.getBoundingClientRect();
-								const cloudCenterX = cloudRect.left + cloudRect.width / 2;
-								const cloudBottom = cloudRect.bottom - 100;
-								
-								const treeX = canvas.width / 2;
-								const treeY = canvas.height - 400;
-								drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
-								gifEffect('centerObj', 'treeBubble');
-								
-								thunderSound.currentTime = 0;
-          					thunderSound.play();
-							
-								shakeCount = 0;
-								lastShakeTime = currentTime;
-								
-								setTimeout(() => {
-									const cloudImg = cloud.getAttribute('data-default-src');
-									cloud.src = cloudImg;
-								}, 1000);
-							}, 1000);
-						}
-					} else {
-						shakeCount = 0;
-						lastShakeTime = currentTime;
-					}
-					
-					//Restart shake after delay
-					clearTimeout(shakeTimeout);
-					shakeTimeout = setTimeout(() => {
-						isShaking = false;
-					}, 100);
-				}
-			}
-			
-			lastPosition = { x: currentX, y: currentY };
-		}
-
-     	function handleTouch(e) {
-    		e.preventDefault();
-       	touchPoints = [];
-            
-        	for (let i = 0; i < e.touches.length; i++) {
-        		touchPoints.push({
-            		x: e.touches[i].clientX,
-               	y: e.touches[i].clientY
-            	});
-        	}
-
-       	if (touchPoints.length === 2) {
-       		const dist = distance(touchPoints[0], touchPoints[1]);
-                
-            	if (dist >= 200 && dist <= 250) {
-            		const centerX = (touchPoints[0].x + touchPoints[1].x) / 2;
-               	const centerY = (touchPoints[0].y + touchPoints[1].y) / 2;
-              	const angle = calculateRotationAngle(touchPoints[0], touchPoints[1]);
-                    
-               	cloud.style.display = 'block';
-              	cloud.style.left = (centerX - 193) + 'px';
-              	cloud.style.top = (centerY - 195) + 'px';
-               	cloud.style.transform = `rotate(${angle}deg)`;
-
-					detectShake(centerX, centerY);
-					
-					const newEdge = detectEdge(centerX);
-					changeScene(newEdge);
-           	}
-      		} 
-   		}
-
-     	document.addEventListener('touchstart', handleTouch);
-     	document.addEventListener('touchmove', handleTouch);
-     	document.addEventListener('touchend', (e) => {
-			if (e.touch.length === 0) {
-				shakeCount = 0;
-			}
-		});
 		
 		const circleCanvas = document.getElementById('circleCanvas');
         const circleCtx = circleCanvas.getContext('2d');
@@ -481,7 +339,147 @@
         setInterval(() => spawnCircle(false), 200); // Spawn blue circles every 0.2 seconds
         setInterval(() => spawnCircle(true), 200); // Spawn red circles every 0.2 second
 
-        animate();
+		function distance(point1, point2) {
+     		return Math.sqrt(
+         		Math.pow(point2.x - point1.x, 2) + 
+            	Math.pow(point2.y - point1.y, 2)
+ 			);
+     	}
+
+		function calculateRotationAngle(point1, point2) {
+			if (point1.x < point2.x){
+				return Math.atan2(point2.y - point1.y, point2.x - point1.x) * (180 / Math.PI);
+			} else {
+				return Math.atan2(point1.y - point2.y, point1.x - point2.x) * (180 / Math.PI);
+			}
+     	}
+
+    	function drawLightning(startX, startY, endX, endY) {
+      		ctx.clearRect(0, 0, canvas.width, canvas.height);
+         	ctx.beginPath();
+         	ctx.strokeStyle = '#FFD700';
+        	ctx.lineWidth = 15;
+
+         	let currentX = startX;
+         	let currentY = startY;
+         	const segments = 10;
+			const dx = endX - startX;
+			const segmentWidth = dx / segments;
+         	const dy = endY - startY;
+        	const segmentHeight = dy / segments;
+
+			ctx.moveTo(startX, startY);
+            
+        	for (let i = 0; i < segments; i++) {
+         		const nextY = startY + (i + 1) * segmentHeight;
+				const nextX = startX + (i + 1) * segmentWidth;
+          	const randX = nextX + (Math.random() - 0.5) * 50;
+            	ctx.lineTo(randX, nextY);
+           	currentX = randX;
+            	currentY = nextY;
+        	}
+            
+         	ctx.lineTo(endX, endY);
+        	ctx.stroke();
+		animate();
+
+			//Clear lightning after delay
+			setTimeout(() => {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				narrative.textContent = "Ollie did not meant to hurt Mr. Tree.";
+			}, 300);
+    	}
+
+		function detectShake(currentX, currentY) {
+			const moveDistance = Math.abs(currentX - lastPosition.x);
+			const currentTime = Date.now();
+			
+			if (moveDistance > shakeThreshold) {
+				if (!isShaking) {
+					isShaking = true;
+					if (currentTime - lastShakeTime < 1000) {
+						shakeCount++;
+						if (shakeCount === 5) {
+							const cloudGif = cloud.getAttribute('data-gif-src');
+							cloud.src = cloudGif;
+							
+							setTimeout(() => {
+								const cloudRect = cloud.getBoundingClientRect();
+								const cloudCenterX = cloudRect.left + cloudRect.width / 2;
+								const cloudBottom = cloudRect.bottom - 100;
+								
+								const treeX = canvas.width / 2;
+								const treeY = canvas.height - 400;
+								drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
+								gifEffect('centerObj', 'treeBubble');
+								
+								thunderSound.currentTime = 0;
+          					thunderSound.play();
+							
+								shakeCount = 0;
+								lastShakeTime = currentTime;
+								
+								setTimeout(() => {
+									const cloudImg = cloud.getAttribute('data-default-src');
+									cloud.src = cloudImg;
+								}, 1000);
+							}, 1000);
+						}
+					} else {
+						shakeCount = 0;
+						lastShakeTime = currentTime;
+					}
+					
+					//Restart shake after delay
+					clearTimeout(shakeTimeout);
+					shakeTimeout = setTimeout(() => {
+						isShaking = false;
+					}, 100);
+				}
+			}
+			
+			lastPosition = { x: currentX, y: currentY };
+		}
+
+     	function handleTouch(e) {
+    		e.preventDefault();
+       	touchPoints = [];
+            
+        	for (let i = 0; i < e.touches.length; i++) {
+        		touchPoints.push({
+            		x: e.touches[i].clientX,
+               	y: e.touches[i].clientY
+            	});
+        	}
+
+       	if (touchPoints.length === 2) {
+       		const dist = distance(touchPoints[0], touchPoints[1]);
+                
+            	if (dist >= 200 && dist <= 250) {
+            		const centerX = (touchPoints[0].x + touchPoints[1].x) / 2;
+               	const centerY = (touchPoints[0].y + touchPoints[1].y) / 2;
+              	const angle = calculateRotationAngle(touchPoints[0], touchPoints[1]);
+                    
+               	cloud.style.display = 'block';
+              	cloud.style.left = (centerX - 193) + 'px';
+              	cloud.style.top = (centerY - 195) + 'px';
+               	cloud.style.transform = `rotate(${angle}deg)`;
+
+					detectShake(centerX, centerY);
+					
+					const newEdge = detectEdge(centerX);
+					changeScene(newEdge);
+           	}
+      		} 
+   		}
+
+     	document.addEventListener('touchstart', handleTouch);
+     	document.addEventListener('touchmove', handleTouch);
+     	document.addEventListener('touchend', (e) => {
+		if (e.touch.length === 0) {
+			shakeCount = 0;
+		}
+	});
 	</script>
 </body>
 </html>
