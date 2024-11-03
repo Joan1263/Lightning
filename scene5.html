@@ -126,17 +126,18 @@
 		<img id="centerObj" src="Assets/PNG/Bin.png" data-default-src="Assets/GIF/BinFire.gif" data-gif-src="Assets/GIF/BinStrike.gif" alt="Tree">
 		<img id="binBubble" src="Assets/PNG/BinBubble.png" alt="Bin Bubble">
 	</div>
-	<audio id="thunderSound" src="Assets/Thunder.mp3"></audio>
+	<audio id="thunderSound" src="Assets/Audio/Thunder.mp3"></audio>
 	<div class="narrative"></div>
 	<div class="gradient left"></div>
 	<div class="gradient right"></div>
 	<script>
 		const cloud = document.getElementById('touchCloud');
-     	const canvas = document.getElementById('lightningCanvas');
-     	const ctx = canvas.getContext('2d');
+     		const canvas = document.getElementById('lightningCanvas');
+     		const ctx = canvas.getContext('2d');
 		const narrative = document.querySelector('.narrative');
 		const gradientL = document.querySelector('.left');
 		const gradientR = document.querySelector('.right');
+		const thunderSound = document.getElementById('thunderSound');
 
      	function resizeCanvas() {
       		canvas.width = window.innerWidth;
