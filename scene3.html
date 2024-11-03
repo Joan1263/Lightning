@@ -158,17 +158,18 @@
 		<img id="leftBubble" src="Assets/PNG/Building1Bubble.png" alt="Left Bubble">
 		<img id="rightBubble" src="Assets/PNG/Building2Bubble.png" alt="Right Bubble">
 	</div>
-	<audio id="thunderSound" src="Assets/Thunder.mp3"></audio>
+	<audio id="thunderSound" src="Assets/Audio/Thunder.mp3"></audio>
 	<div class="narrative"></div>
 	<div class="gradient left"></div>
 	<div class="gradient right"></div>
 	<script>
 		const cloud = document.getElementById('touchCloud');
-     	const canvas = document.getElementById('lightningCanvas');
-     	const ctx = canvas.getContext('2d');
+     		const canvas = document.getElementById('lightningCanvas');
+     		const ctx = canvas.getContext('2d');
 		const narrative = document.querySelector('.narrative');
 		const gradientL = document.querySelector('.left');
 		const gradientR = document.querySelector('.right');
+		const thunderSound = document.getElementById('thunderSound');
 
      	function resizeCanvas() {
       		canvas.width = window.innerWidth;
