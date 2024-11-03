@@ -272,7 +272,7 @@
 			setTimeout(() => {
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				//narrative.textContent = "Ollie did not meant to hurt Mr. Tree.";
-				narrative.textContent = "These negative charges pull positive charges from the ground to it like a magnet, watch what happens when Ollie is too close to Mr. Tree!";
+				narrative.textContent = "These negative charges pull positive charges from the ground to it like a magnet!";
 			}, 300);
     	}
 		const circleCanvas = document.getElementById('circleCanvas');
@@ -321,7 +321,7 @@
                     }
                 });
 
-                if (nearestCircle && minDistance < 200) {
+                if (nearestCircle && minDistance < 300) {
                     const angle = Math.atan2(nearestCircle.y - this.y, nearestCircle.x - this.x);
                     this.vx += Math.cos(angle) * 0.05;
                     this.vy += Math.sin(angle) * 0.05;
@@ -339,32 +339,6 @@
                 // Boundary check
                 if (this.x < this.radius || this.x > circleCanvas.width - this.radius) this.vx *= -1;
                 if (this.y < this.radius || this.y > circleCanvas.height - this.radius) this.vy *= -1;
-
-		const cloudGif = cloud.getAttribute('data-gif-src');
-							cloud.src = cloudGif;
-							
-							setTimeout(() => {
-								const cloudRect = cloud.getBoundingClientRect();
-								const cloudCenterX = cloudRect.left + cloudRect.width / 2;
-								const cloudBottom = cloudRect.bottom - 100;
-								
-								const treeX = canvas.width / 2;
-								const treeY = canvas.height - 400;
-								drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
-								gifEffect('centerObj', 'treeBubble');
-								animate();
-								
-								thunderSound.currentTime = 0;
-          							thunderSound.play();
-							
-								shakeCount = 0;
-								lastShakeTime = currentTime;
-								
-								setTimeout(() => {
-									const cloudImg = cloud.getAttribute('data-default-src');
-									cloud.src = cloudImg;
-								}, 1000);
-							}, 1000);
             }
 
             isExpired() {
