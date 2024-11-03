@@ -155,7 +155,8 @@
      	resizeCanvas();
      	window.addEventListener('resize', resizeCanvas);
 
-		narrative.textContent = "Lightning is created when electic charges build up in Ollie from when he moves!";
+		//narrative.textContent = "Lightning is created when electic charges build up in Ollie from when he moves!";
+		narrative.textContent = "When Ollie moves he gives of negative charges!";
 
 		let edgeDetected = '';
 		let timeDetected = Date.now();
@@ -223,7 +224,57 @@
 				}, 1000);
 			}, 500);
 		}
-		
+
+		function distance(point1, point2) {
+     		return Math.sqrt(
+         		Math.pow(point2.x - point1.x, 2) + 
+            	Math.pow(point2.y - point1.y, 2)
+ 			);
+     	}
+
+		function calculateRotationAngle(point1, point2) {
+			if (point1.x < point2.x){
+				return Math.atan2(point2.y - point1.y, point2.x - point1.x) * (180 / Math.PI);
+			} else {
+				return Math.atan2(point1.y - point2.y, point1.x - point2.x) * (180 / Math.PI);
+			}
+     	}
+
+    	function drawLightning(startX, startY, endX, endY) {
+      		ctx.clearRect(0, 0, canvas.width, canvas.height);
+         	ctx.beginPath();
+         	ctx.strokeStyle = '#FFD700';
+        	ctx.lineWidth = 15;
+
+         	let currentX = startX;
+         	let currentY = startY;
+         	const segments = 10;
+			const dx = endX - startX;
+			const segmentWidth = dx / segments;
+         	const dy = endY - startY;
+        	const segmentHeight = dy / segments;
+
+			ctx.moveTo(startX, startY);
+            
+        	for (let i = 0; i < segments; i++) {
+         		const nextY = startY + (i + 1) * segmentHeight;
+				const nextX = startX + (i + 1) * segmentWidth;
+          	const randX = nextX + (Math.random() - 0.5) * 50;
+            	ctx.lineTo(randX, nextY);
+           	currentX = randX;
+            	currentY = nextY;
+        	}
+            
+         	ctx.lineTo(endX, endY);
+        	ctx.stroke();
+
+			//Clear lightning after delay
+			setTimeout(() => {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				//narrative.textContent = "Ollie did not meant to hurt Mr. Tree.";
+				narrative.textContent = "These negative charges pull positive charges from the ground to it like a magnet, watch what happens when Ollie is too close to Mr. Tree!";
+			}, 300);
+    	}
 		const circleCanvas = document.getElementById('circleCanvas');
         const circleCtx = circleCanvas.getContext('2d');
 
@@ -288,6 +339,15 @@
                 // Boundary check
                 if (this.x < this.radius || this.x > circleCanvas.width - this.radius) this.vx *= -1;
                 if (this.y < this.radius || this.y > circleCanvas.height - this.radius) this.vy *= -1;
+
+		const cloudRect = cloud.getBoundingClientRect();
+		const cloudCenterX = cloudRect.left + cloudRect.width / 2;
+		const cloudBottom = cloudRect.bottom - 100;
+								
+		const treeX = canvas.width / 2;
+		const treeY = canvas.height - 400;
+		drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
+		gifEffect('centerObj', 'treeBubble');
             }
 
             isExpired() {
@@ -339,57 +399,6 @@
         setInterval(() => spawnCircle(false), 200); // Spawn blue circles every 0.2 seconds
         setInterval(() => spawnCircle(true), 200); // Spawn red circles every 0.2 second
 
-		function distance(point1, point2) {
-     		return Math.sqrt(
-         		Math.pow(point2.x - point1.x, 2) + 
-            	Math.pow(point2.y - point1.y, 2)
- 			);
-     	}
-
-		function calculateRotationAngle(point1, point2) {
-			if (point1.x < point2.x){
-				return Math.atan2(point2.y - point1.y, point2.x - point1.x) * (180 / Math.PI);
-			} else {
-				return Math.atan2(point1.y - point2.y, point1.x - point2.x) * (180 / Math.PI);
-			}
-     	}
-
-    	function drawLightning(startX, startY, endX, endY) {
-      		ctx.clearRect(0, 0, canvas.width, canvas.height);
-         	ctx.beginPath();
-         	ctx.strokeStyle = '#FFD700';
-        	ctx.lineWidth = 15;
-
-         	let currentX = startX;
-         	let currentY = startY;
-         	const segments = 10;
-			const dx = endX - startX;
-			const segmentWidth = dx / segments;
-         	const dy = endY - startY;
-        	const segmentHeight = dy / segments;
-
-			ctx.moveTo(startX, startY);
-            
-        	for (let i = 0; i < segments; i++) {
-         		const nextY = startY + (i + 1) * segmentHeight;
-				const nextX = startX + (i + 1) * segmentWidth;
-          	const randX = nextX + (Math.random() - 0.5) * 50;
-            	ctx.lineTo(randX, nextY);
-           	currentX = randX;
-            	currentY = nextY;
-        	}
-            
-         	ctx.lineTo(endX, endY);
-        	ctx.stroke();
-		animate();
-
-			//Clear lightning after delay
-			setTimeout(() => {
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				narrative.textContent = "Ollie did not meant to hurt Mr. Tree.";
-			}, 300);
-    	}
-
 		function detectShake(currentX, currentY) {
 			const moveDistance = Math.abs(currentX - lastPosition.x);
 			const currentTime = Date.now();
@@ -412,9 +421,10 @@
 								const treeY = canvas.height - 400;
 								drawLightning(cloudCenterX, cloudBottom, treeX, treeY);
 								gifEffect('centerObj', 'treeBubble');
+								animate();
 								
 								thunderSound.currentTime = 0;
-          					thunderSound.play();
+          							thunderSound.play();
 							
 								shakeCount = 0;
 								lastShakeTime = currentTime;
