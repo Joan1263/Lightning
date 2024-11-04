@@ -309,11 +309,11 @@
 
             update(circles) {
                 let nearestCircle = null;
-                let min = Infinity;
+                let minDistance = Infinity;
 
                 circles.forEach(circle => {
                     if (circle.isRed !== this.isRed) {
-                        const  = Math.hypot(circle.x - this.x, circle.y - this.y);
+                        const Distance = Math.hypot(circle.x - this.x, circle.y - this.y);
                         if (distance < minDistance) {
                             minDistance = distance;
                             nearestCircle = circle;
@@ -321,7 +321,7 @@
                     }
                 });
 
-                if (nearestCircle && minDistance < 400) {
+                if (nearestCircle && minDistance < 500) {
                     const angle = Math.atan2(nearestCircle.y - this.y, nearestCircle.x - this.x);
                     this.vx += Math.cos(angle) * 0.05;
                     this.vy += Math.sin(angle) * 0.05;
