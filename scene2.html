@@ -321,7 +321,7 @@
                     }
                 });
 
-                if (nearestCircle && minDistance < 500) {
+                if (nearestCircle && minDistance < 400) {
                     const angle = Math.atan2(nearestCircle.y - this.y, nearestCircle.x - this.x);
                     this.vx += Math.cos(angle) * 0.05;
                     this.vy += Math.sin(angle) * 0.05;
